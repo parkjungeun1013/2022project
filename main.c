@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define WAITING_TIME 20 //한팀당 예상 대기시간  
 
 typedef struct waiting{
     char name[20]; //이름 
@@ -12,11 +13,12 @@ typedef struct waiting{
 //함수선언 
 int menu();
 void addWaiting(waiting_t** head, void(*func_show)(waiting_t*));
-void delWaiting(waiting_t** head, waiting_t*(*func_search)(waiting_t*,char*)); 
+void delWaiting(waiting_t** head, waiting_t*(*func_search)(waiting_t*,char*));
 void show(waiting_t* node);
 waiting_t* search(waiting_t* head, char number[20]);
 void printWaitingList(waiting_t *head);
 void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*), void(*func_show)(waiting_t*));
+void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*));
 
 int main(){
 
@@ -33,24 +35,21 @@ int main(){
                 modifyWaiting(head,search,show);
                 break;
             case 4:
-
-
-
+                printWaitingTime(head,search);
+                break;
             case 5:
                 printWaitingList(head);
                 break;
             case 8:
                 printf("프로그램을 종료합니다\n");
-                printf("=========================\n");
+                printf("=========================\n\n");
                 return 0; 
             default: 
                 printf("잘못된 입력입니다.\n");
                 break;
-
         }
     }
     return 0; 
-
 }
 
 //메뉴 출력하는 함수 
@@ -174,7 +173,7 @@ void printWaitingList(waiting_t *head){
     if(head = NULL){
         printf("대기가 없습니다.\n");
     }
-    printf("대기순서  이름\t 전화번호\t 인원수\n");
+    printf("\n대기순서  이름\t 전화번호\t 인원수\n");
     while(temp!=NULL){
         printf("%d\t  %s\t %s\t %d명\n",i, temp->name, temp->number, temp->people);
         i++;
@@ -225,6 +224,30 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),v
 	show(tmp_node);
 }
 
+//전화번호를 조회해 현재 대기순서와 대기시간을 출력하는 함수 
+void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*)){
+    char number[20];
+    waiting_t* tmp_node;
+    waiting_t* temp = head; 
+    int num=0;
+    
+    printf("등록한 전화번호를 입력해주세요 : ");
+    scanf("%s", number);
+    tmp_node = func_search(head,number);
+    if(tmp_node==NULL){
+        printf("등록되지 않은 번호입니다.\n");
+        return; 
+    }
+    while(temp!=NULL){
+        num++;
+        if(strcmp(temp->number,number)==0){
+            break;
+        }
+        
+        temp= temp->next;
+    }
+    printf("%s님은 현재 대기 %d번째이고, 예상 대기 시간은 %d분입니다.\n", tmp_node->name, num, num*WAITING_TIME);
+}
 
 
 
