@@ -10,13 +10,17 @@ typedef struct waiting{
 } waiting_t;
 
 int menu();
-void addWaiting();
+void addWaiting(waiting_t** head, void(*func_show)(waiting_t*));
 void delWaiting(); 
+void show(waiting_t* node);
 
 int main(){
+
+    waiting_t* head = NULL;
     while(1){
         switch(menu()){
             case 1:
+                addWaiting(&head,show);
                 break;
             case 2:
             case 3:
@@ -49,4 +53,33 @@ int menu(){
     printf("번호를 선택해주세요: ");
     scanf("%d", &choice);
     return choice; 
+}
+
+void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
+    char name[20];
+    char number[20];
+    int people;
+    waiting_t* new_node; 
+
+    printf("이름: ");
+    scanf("%s",name);
+    printf("전화번호: ");
+    scanf("%s", number);
+    printf("인원수: ");
+    scanf("%d", &people);
+
+    new_node = (waiting_t*)malloc(sizeof(waiting_t));
+    strcpy(new_node->name, name);
+    strcpy(new_node->number, number);
+    new_node->people = people; 
+    new_node->next = *head;
+    *head = new_node;
+
+    printf("=========================\n");
+    func_show(new_node);
+    printf("대기가 등록되었습니다.\n"); 
+}
+
+void show(waiting_t* node){
+    
 }
