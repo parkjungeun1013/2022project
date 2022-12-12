@@ -16,6 +16,7 @@ void delWaiting(waiting_t** head, waiting_t*(*func_search)(waiting_t*,char*));
 void show(waiting_t* node);
 waiting_t* search(waiting_t* head, char number[20]);
 void printWaitingList(waiting_t *head);
+void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*), void(*func_show)(waiting_t*));
 
 int main(){
 
@@ -28,19 +29,35 @@ int main(){
             case 2:
                 delWaiting(&head,search);
                 break;
+            case 3:
+                modifyWaiting(head,search,show);
+                break;
+            case 4:
+
+
+
             case 5:
                 printWaitingList(head);
                 break;
+            case 8:
+                printf("프로그램을 종료합니다\n");
+                printf("=========================\n");
+                return 0; 
+            default: 
+                printf("잘못된 입력입니다.\n");
+                break;
+
         }
     }
     return 0; 
 
 }
 
+//메뉴 출력하는 함수 
 int menu(){
     int choice;
     printf("\n\n<숭실음식점 대기 관리 프로그램>\n");
-    printf("===========================\n");
+    printf("===================================\n");
     printf("1.대기 등록\n");
     printf("2.대기 삭제\n");
     printf("3.대기 손님 정보 수정\n");
@@ -49,12 +66,13 @@ int menu(){
     printf("6.파일에 저장\n");
     printf("7.파일 업로드하기\n");
     printf("8.종료\n");
-    printf("===========================\n");
+    printf("=========================\n");
     printf("번호를 선택해주세요: ");
     scanf("%d", &choice);
     return choice; 
 }
 
+//대기 등록하는 함수 
 void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
     char name[20];
     char number[20];
@@ -87,11 +105,13 @@ void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
     printf("대기가 등록되었습니다.\n"); 
 }
 
+//한 노드의 정보를 출력하는 함수 
 void show(waiting_t* node){
     printf("이름\t 전화번호\t 인원수\n");
     printf("%s\t %s\t %d명\n",node->name, node->number, node->people);
 }
 
+//대기를 삭제하는 함수 
 void delWaiting(waiting_t** head, waiting_t* (*func_search)(waiting_t*,char*)){
     char number[20];
     int ans;
@@ -136,7 +156,8 @@ void delWaiting(waiting_t** head, waiting_t* (*func_search)(waiting_t*,char*)){
     }
 }
 
-waiting_t* search(waiting_t* head, char number[20]){ //등록된 전화번호를 가진 노드를 리턴한다. 
+//등록된 전화번호를 가진 노드를 리턴하는 함수 
+waiting_t* search(waiting_t* head, char number[20]){  
     waiting_t* tmp = head;
     while(tmp != NULL){
         if( strcmp(tmp->number,number)==0)
@@ -146,17 +167,64 @@ waiting_t* search(waiting_t* head, char number[20]){ //등록된 전화번호를
     return NULL;
 }
 
+//전체 대기 목록 출력하는 함수 
 void printWaitingList(waiting_t *head){
     waiting_t *temp = head;
     int i = 1; 
     if(head = NULL){
         printf("대기가 없습니다.\n");
     }
+    printf("대기순서  이름\t 전화번호\t 인원수\n");
     while(temp!=NULL){
-        printf("대기순서\t이름\t 전화번호\t 인원수\n");
-        printf("%d\t %s\t %s\t %d명\n",i, temp->name, temp->number, temp->people);
+        printf("%d\t  %s\t %s\t %d명\n",i, temp->name, temp->number, temp->people);
         i++;
         temp= temp->next;
     }
 }
+
+//대기 정보를 수정하는 함수 
+void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),void(*func_show)(waiting_t*)){    
+    char number[20],mod_name[20],mod_number[20];
+    waiting_t* tmp_node;
+    int choice, mod_people;
+
+    printf("등록한 전화번호를 입력해주세요 : ");
+    scanf("%s", number);
+    tmp_node = func_search(head,number);
+    if(tmp_node==NULL){
+        printf("등록되지 않은 번호입니다.\n");
+        return; 
+    }
+    printf("등록된 정보입니다.\n");
+    func_show(tmp_node);
+    printf("=========================\n");
+    printf("수정할 내용을 선택하세요(1: 이름 2: 전화번호 3: 인원수)\n");
+    scanf("%d", &choice);
+    switch(choice){
+			case 1:
+				printf("수정할 내용을 입력하세요: ");
+				scanf("%s",mod_name);
+				strcpy(tmp_node->name,mod_name);
+				break;
+			case 2:
+				printf("수정할 내용을 입력하세요: ");
+				scanf("%s",mod_number);
+				strcpy(tmp_node->number,mod_number);
+				break;
+			case 3:
+				printf("수정할 내용을 입력하세요: ");
+				scanf("%d",&mod_people);
+				tmp_node->people=mod_people;
+				break;
+			default:
+				printf("잘못 입력하셨습니다.\n");
+				break;
+    }
+    printf("=========================\n");
+	printf("다음과 같이 수정되었습니다.\n");
+	show(tmp_node);
+}
+
+
+
 
