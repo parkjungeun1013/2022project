@@ -20,6 +20,7 @@ void printWaitingList(waiting_t *head);
 void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*), void(*func_show)(waiting_t*));
 void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*));
 void save(waiting_t* head);
+void load(waiting_t** head);
 
 int main(){
 
@@ -43,6 +44,9 @@ int main(){
                 break;
             case 6:
                 save(head);
+                break;
+            case 7:
+                load(&head);
                 break;
             case 8:
                 printf("프로그램을 종료합니다\n");
@@ -252,7 +256,7 @@ void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*
     printf("%s님은 현재 대기 %d번째이고, 예상 대기 시간은 %d분입니다.\n", tmp_node->name, num, num*WAITING_TIME);
 }
 
-//노드의 정보를 파일에 저장 
+//노드의 정보를 파일에 저장하는 함수 
 void save(waiting_t* head){
     waiting_t* node = head;
     FILE* fp = fopen("waiting.txt", "w");
@@ -268,5 +272,30 @@ void save(waiting_t* head){
     printf("파일을 저장했습니다.\n");
 }
 
+//파일의 데이터를 구조체로 변환하는 함수 
+void load(waiting_t** head){
+    waiting_t* node;
+	FILE* fp=fopen("waiting.txt","r+");
+	if(fp==NULL){
+		printf("파일을 열 수 없습니다.\n");
+		return NULL;
+	}
+	while(1){
+		node=(waiting_t*) malloc (sizeof(waiting_t));
+        node->next = NULL;
+		if(feof(fp)!=0)
+			break;
+		fscanf(fp,"%s %s %d\n", node->name, node->number, &node->people);
+        if (*head == NULL)
+            *head = node;
+        else{
+            waiting_t *tmp = *head;
+            while (tmp->next != NULL){
+                tmp = tmp->next;
+            }
+            tmp->next =node;
+        }
+	}
+	fclose(fp);
 
-
+}
