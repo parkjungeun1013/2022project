@@ -23,8 +23,8 @@ void save(waiting_t* head);
 void load(waiting_t** head);
 
 int main(){
-
     waiting_t* head = NULL;
+	
     while(1){
         switch(menu()){
             case 1:
@@ -50,7 +50,7 @@ int main(){
                 break;
             case 8:
                 printf("프로그램을 종료합니다\n");
-                printf("=========================\n\n");
+                printf("===================================\n\n");
                 return 0; 
             default: 
                 printf("잘못된 입력입니다.\n");
@@ -73,7 +73,7 @@ int menu(){
     printf("6.파일에 저장\n");
     printf("7.파일 업로드하기\n");
     printf("8.종료\n");
-    printf("=========================\n");
+    printf("===================================\n");
     printf("번호를 선택해주세요: ");
     scanf("%d", &choice);
     return choice; 
@@ -107,7 +107,7 @@ void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
         }
         tmp->next = new_node;
     }
-    printf("=========================\n");
+    printf("===================================\n");
     func_show(new_node);
     printf("대기가 등록되었습니다.\n"); 
 }
@@ -137,8 +137,8 @@ void delWaiting(waiting_t** head, waiting_t* (*func_search)(waiting_t*,char*)){
     printf("대기를 삭제하시겠습니까?(1: 네 2: 아니오 )\n");
     scanf("%d", &ans);
     if(ans==1){
-        if(strcmp(temp->number,number)==0){
-            *head = temp->next; //가장 앞에 있는 노드 삭제할때 
+        if(strcmp(temp->number,number)==0){       //가장 앞에 있는 노드 삭제할때 
+            *head = temp->next; 
             free(temp);
             printf("대기 삭제되었습니다.\n");
         }
@@ -174,10 +174,11 @@ waiting_t* search(waiting_t* head, char number[20]){
     return NULL;
 }
 
-//전체 대기 목록 출력하는 함수 
+//전체 대기 목록을 출력하는 함수 
 void printWaitingList(waiting_t *head){
     waiting_t *temp = head;
     int i = 1; 
+	
     if(head = NULL){
         printf("대기가 없습니다.\n");
     }
@@ -204,7 +205,7 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),v
     }
     printf("등록된 정보입니다.\n");
     func_show(tmp_node);
-    printf("=========================\n");
+    printf("===================================\n");
     printf("수정할 내용을 선택하세요(1: 이름 2: 전화번호 3: 인원수)\n");
     scanf("%d", &choice);
     switch(choice){
@@ -227,7 +228,7 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),v
 				printf("잘못 입력하셨습니다.\n");
 				break;
     }
-    printf("=========================\n");
+    printf("===================================\n");
 	printf("다음과 같이 수정되었습니다.\n");
 	show(tmp_node);
 }
@@ -297,5 +298,4 @@ void load(waiting_t** head){
         }
 	}
 	fclose(fp);
-
 }
