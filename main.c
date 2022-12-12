@@ -19,6 +19,7 @@ waiting_t* search(waiting_t* head, char number[20]);
 void printWaitingList(waiting_t *head);
 void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*), void(*func_show)(waiting_t*));
 void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*));
+void save(waiting_t* head);
 
 int main(){
 
@@ -39,6 +40,9 @@ int main(){
                 break;
             case 5:
                 printWaitingList(head);
+                break;
+            case 6:
+                save(head);
                 break;
             case 8:
                 printf("프로그램을 종료합니다\n");
@@ -243,10 +247,25 @@ void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*
         if(strcmp(temp->number,number)==0){
             break;
         }
-        
         temp= temp->next;
     }
     printf("%s님은 현재 대기 %d번째이고, 예상 대기 시간은 %d분입니다.\n", tmp_node->name, num, num*WAITING_TIME);
+}
+
+//노드의 정보를 파일에 저장 
+void save(waiting_t* head){
+    waiting_t* node = head;
+    FILE* fp = fopen("waiting.txt", "w");
+    if(fp==NULL){
+        printf("파일을 열 수 없습니다.\n");
+        return; 
+    }
+    while(node!=NULL){
+        fprintf(fp, "%s %s %d\n", node->name, node->number, node->people);
+        node = node-> next;
+    }
+    fclose(fp);
+    printf("파일을 저장했습니다.\n");
 }
 
 
