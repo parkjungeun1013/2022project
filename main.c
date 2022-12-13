@@ -21,6 +21,7 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*), 
 void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*));
 void save(waiting_t* head);
 void load(waiting_t** head);
+void clearBuffer();
 
 int main(){
     waiting_t* head = NULL;
@@ -76,7 +77,12 @@ int menu(){
     printf("===================================\n");
     printf("번호를 선택해주세요: ");
     scanf("%d", &choice);
+    clearBuffer();
     return choice; 
+}
+
+void clearBuffer(){
+    while (getchar() != '\n');
 }
 
 //대기 등록하는 함수 
@@ -88,10 +94,13 @@ void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
 
     printf("이름: ");
     scanf("%s",name);
+    clearBuffer();
     printf("전화번호: ");
     scanf("%s", number);
+    clearBuffer();
     printf("인원수: ");
     scanf("%d", &people);
+    clearBuffer();
 
     new_node = (waiting_t*)malloc(sizeof(waiting_t));
     strcpy(new_node->name, name);
@@ -109,7 +118,7 @@ void addWaiting(waiting_t** head,void(*func_show)(waiting_t*)){
     }
     printf("===================================\n");
     func_show(new_node);
-    printf("대기가 등록되었습니다.\n"); 
+    printf("\n대기가 등록되었습니다.\n"); 
 }
 
 //한 노드의 정보를 출력하는 함수 
@@ -129,17 +138,20 @@ void delWaiting(waiting_t** head, waiting_t* (*func_search)(waiting_t*,char*)){
 
     printf("등록한 전화번호를 입력해주세요 : ");
     scanf("%s", number);
+    clearBuffer();
     tmp_node = func_search(*head,number);
     if(tmp_node==NULL){
         printf("등록되지 않은 번호입니다.\n");
         return; 
     }
-    printf("대기를 삭제하시겠습니까?(1: 네 2: 아니오 )\n");
+    printf("대기를 삭제하시겠습니까? (1: 네 2: 아니오 )\n");
     scanf("%d", &ans);
+    clearBuffer();
     if(ans==1){
         if(strcmp(temp->number,number)==0){       //가장 앞에 있는 노드 삭제할때 
             *head = temp->next; 
             free(temp);
+            printf("===================================\n");
             printf("대기 삭제되었습니다.\n");
         }
         else{
@@ -147,7 +159,8 @@ void delWaiting(waiting_t** head, waiting_t* (*func_search)(waiting_t*,char*)){
                 if(strcmp(temp->number,number)==0){
                     pre->next = temp->next;
                     free(temp);
-                    printf("대기가 삭제되었습니다.\n");
+                    printf("===================================\n");
+                    printf("\n대기가 삭제되었습니다.\n");
                     break;
                 }
                 pre = temp;
@@ -198,30 +211,34 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),v
 
     printf("등록한 전화번호를 입력해주세요 : ");
     scanf("%s", number);
+    clearBuffer();
     tmp_node = func_search(head,number);
     if(tmp_node==NULL){
         printf("등록되지 않은 번호입니다.\n");
         return; 
     }
-    printf("등록된 정보입니다.\n");
-    func_show(tmp_node);
     printf("===================================\n");
-    printf("수정할 내용을 선택하세요(1: 이름 2: 전화번호 3: 인원수)\n");
+    func_show(tmp_node);
+    printf("\n수정할 내용을 선택하세요(1: 이름 2: 전화번호 3: 인원수)\n");
     scanf("%d", &choice);
+    clearBuffer();
     switch(choice){
 			case 1:
 				printf("수정할 내용을 입력하세요: ");
 				scanf("%s",mod_name);
+                clearBuffer();
 				strcpy(tmp_node->name,mod_name);
 				break;
 			case 2:
 				printf("수정할 내용을 입력하세요: ");
 				scanf("%s",mod_number);
+                clearBuffer();
 				strcpy(tmp_node->number,mod_number);
 				break;
 			case 3:
 				printf("수정할 내용을 입력하세요: ");
 				scanf("%d",&mod_people);
+                clearBuffer();
 				tmp_node->people=mod_people;
 				break;
 			default:
@@ -229,8 +246,8 @@ void modifyWaiting(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*),v
 				break;
     }
     printf("===================================\n");
-	printf("다음과 같이 수정되었습니다.\n");
 	show(tmp_node);
+    printf("\n다음과 같이 수정되었습니다.\n");
 }
 
 //전화번호를 조회해 현재 대기순서와 대기시간을 출력하는 함수 
@@ -242,6 +259,7 @@ void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*
     
     printf("등록한 전화번호를 입력해주세요 : ");
     scanf("%s", number);
+    clearBuffer();
     tmp_node = func_search(head,number);
     if(tmp_node==NULL){
         printf("등록되지 않은 번호입니다.\n");
@@ -254,6 +272,7 @@ void printWaitingTime(waiting_t *head, waiting_t*(*func_search)(waiting_t*,char*
         }
         temp= temp->next;
     }
+    printf("===================================\n");
     printf("%s님은 현재 대기 %d번째이고, 예상 대기 시간은 %d분입니다.\n", tmp_node->name, num, num*WAITING_TIME);
 }
 
@@ -298,4 +317,5 @@ void load(waiting_t** head){
         }
 	}
 	fclose(fp);
+    printf("파일을 업로드했습니다.\n");
 }
